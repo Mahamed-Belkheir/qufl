@@ -4,19 +4,31 @@ function storeFactory() {
 
 class MemoryStore {
     constructor() {
-        this.storage = {};
+        this.storage = new Map();
     }
     
     storeToken(agent, client) {
-        this.storage[agent+client] = true;
+        let bucket = this.storage.get(agent);
+        if (!bucket)
+            this.storage.set(agent, new Set([client]))
+        else
+            bucket.add(client)
     }
 
     checkToken(agent, client) {
-        return !!this.storage[agent+client];
+        let bucket = this.storage.get(agent);
+        if (!bucket)
+            return false;
+        return bucket.has(client);
     }
 
     deleteToken(agent, client) {
-        delete this.storage[agent+client];
+        let bucket = this.storage.get(agent);
+        if (!bucket)
+            return;
+        bucket.delete(client);
+        if (bucket.size == 0)
+            this.storage.delete(agent);
     }
 }
 

@@ -1,5 +1,4 @@
 const storeFactory = require('./tokenstore');
-const validatorFactory = require('./validation')
 const helpers = require('./helpers')
 
 class Qufl {
@@ -63,3 +62,5 @@ class Qufl {
         }
     }
 }
+
+module.exports = Qufl;

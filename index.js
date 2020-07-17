@@ -29,7 +29,7 @@ class Qufl {
         if (!this.store.checkToken(agent, client))
             throw Error("Refresh token removed");
         const token = this.jwt.sign({ agent, role, type:"token", custom, }, this.secret, { expiresIn: this.timeout });
-        return { token };
+        return token;
     }
 
     removeToken(agent, client) {
@@ -52,11 +52,19 @@ class Qufl {
                 })
                 return;
             }
-            if ((role && token.role != role ) || predicate(token)) {
-                res.status(403, {
-                    error: "Invalid permissions"
+            console.log(role, token.role)
+            if (role && token.role != role ) {
+                res.status(403).send({
+                    error: "Invalid role"
                 })
-            }
+                return;
+            } 
+            if (!predicate(token.custom)) {
+                res.status(403).send({
+                    error: "Custom Auth check failed"
+                })
+                return;
+            } 
             req.qufl = token;
             next()
         }

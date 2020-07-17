@@ -1,0 +1,11 @@
+{
+  "name": "qufl",
+  "version": "0.0.1",
+  "description": "qufl is a simple JWT authentication library that supports refresh tokens and distributed systems",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mahamed Belkheir",
+  "license": "MIT"
+}

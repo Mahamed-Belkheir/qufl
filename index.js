@@ -36,7 +36,7 @@ class Qufl {
         this.store.deleteToken(agent, client);    
     }
 
-    getValidator({role, predicate = ()=>true}) {
+    getValidator({role, type="token", predicate = ()=>true}) {
         return (req, res, next) => {
             let tokenString = helpers.getToken(req);
             if (!tokenString) {
@@ -59,6 +59,12 @@ class Qufl {
                 })
                 return;
             } 
+            if (token.type != type ) {
+                res.status(403).send({
+                    error: "Invalid type"
+                })
+                return;
+            }
             if (!predicate(token.custom)) {
                 res.status(403).send({
                     error: "Custom Auth check failed"

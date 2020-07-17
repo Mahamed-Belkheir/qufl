@@ -1,5 +1,5 @@
-function ValidationFactory() {
-
+function ValidationFactory(schema) {
+    return new DefaultValidation(schema)
 }
 
 class DefaultValidation {

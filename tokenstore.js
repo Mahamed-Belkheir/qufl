@@ -7,16 +7,16 @@ class MemoryStore {
         this.storage = {};
     }
     
-    storeToken(agent) {
-        this.storage[agent] = true;
+    storeToken(agent, client) {
+        this.storage[agent+client] = true;
     }
 
-    checkToken(agent) {
-        return !!this.storage[agent];
+    checkToken(agent, client) {
+        return !!this.storage[agent+client];
     }
 
-    deleteToken(agent) {
-        delete this.storage[agent];
+    deleteToken(agent, client) {
+        delete this.storage[agent+client];
     }
 }
 

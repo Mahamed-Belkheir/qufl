@@ -53,3 +53,8 @@ test("Second client stored token still exists", () => {
 test("first client stored token no longer exists", () => {
     expect(store.checkToken(tokens[0].agent, tokens[0].client[0])).toBeFalsy()
 })
+
+test("store clear removes left token", () => {
+    store.clear();
+    expect(store.checkToken(tokens[0].agent, tokens[0].client[1])).toBeFalsy()
+})

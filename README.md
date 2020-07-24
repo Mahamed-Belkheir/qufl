@@ -1,7 +1,7 @@
 # Qufl
 
 (arabic: قفل, "Lock") is a JWT authentication library for express-middleware compatible libraries.
-Qufl focues on being simple to use, unopinionated and flexible, it does not assume anything of your project
+Qufl focuses on being simple to use, unopinionated and flexible, it does not assume anything of your project
 besides a web framework that is compatible with express middleware. Qufl comes with 0 dependencies.
 
 >**Note:**  Qufl is still in Alpha, and the API might change in the future.
@@ -27,9 +27,9 @@ implementation satisfying the interface would suffice.
 
 ### Initialize Qufl
 
-You need to initialize a qufl intance by pasing an option object to the constructor, options include:
+You need to initialize a qufl instance by passing an option object to the constructor, options include:
 
-- JWT: the jsonwebtoken object or another implementation that satisfy the sign and verify interfaces
+- JWT: the jsonwebtoken object or another implementation that satisfies the sign and verify interfaces
 - secret: the JWT secret key
 - timeout: time before a JWT expires, either a number (seconds) or a string e.g ("1h", "20m")
 
@@ -46,8 +46,8 @@ const qufl = new Qufl({
 
 ### Sign a Token
 
-The signToken method return both a token and a refresh token, the latter is added to the token store (currently only in memory)
-You pass an options object
+The signToken method returns both a token and a refresh token, the latter is added to the token store (currently only in memory).
+You pass an options object that contains:
 
 - agent: the user being authorized
 - role: user role
@@ -67,7 +67,7 @@ qufl.signToken({
 
 ### refreshToken
 
-the refreshToken method takes a decoded refresh JWT and returns a new JWT,
+The refreshToken method takes a decoded refresh JWT and returns a new JWT,
 provided the decoded token is of type refresh and is still in the token store
 
 ```js
@@ -86,7 +86,7 @@ qufl.removeToken(decodedToken);
 
 ### changeSecret
 
-changes the JWT secret and empties the token store
+Changes the JWT secret and empties the token store
 
 ```js
 qufl.changeSecret(newSecret);
@@ -96,13 +96,13 @@ qufl.changeSecret(newSecret);
 
 Generates a custom authentication middleware function based on the option object passed in
 
->**note:** content likely to change in future versions
+>**Note:** content likely to change in future versions
 
 - role: the user role allowed to access the route
 - type: token type, optional parameter, normal tokens are "token", input "refresh" for refresh token routes
 - predicate: a function expected to return a boolean value, it's passed the custom attribute given to the signToken function
 
-the middleware will reject requests for the following:
+The middleware will reject requests for the following:
 
 - no token provided
 - invalid token

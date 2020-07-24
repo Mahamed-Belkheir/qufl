@@ -1,6 +1,6 @@
 {
   "name": "qufl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "qufl is a simple JWT authentication library that supports refresh tokens and distributed systems",
   "main": "index.js",
   "scripts": {
@@ -16,5 +16,12 @@
     "express": "^4.17.1",
     "jest": "^26.1.0",
     "jsonwebtoken": "^8.5.1"
+  },
+  "keywords": [
+    "jwt", "authentication", "refresh", "tokens", "express-middleware"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mahamed-Belkheir/qufl"
   }
 }

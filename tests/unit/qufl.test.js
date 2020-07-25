@@ -14,9 +14,7 @@ let qufl = new Qufl({ jwt, secret: "testing_secret" });
 let credentials = {
     sub: "bob",
     aud: "admin",
-    custom: {
-        likesToParty: true
-    }
+    likesToParty: true
 };
 
 beforeEach(()=>{

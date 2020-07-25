@@ -52,16 +52,14 @@ You pass an options object that contains:
 - sub: the jwt subject (e.g user id)
 - aud: the jwt audience (where the jwt is to be used)
 - client: optional parameter, allows different session on different clients (e.g: mobile login and logout does not affect web session)
-- custom: any custom properties you wish to include to verify by later on
+- ...custom: any custom properties you wish to include to verify by later on
 
 ```js
 qufl.signToken({
     sub: userId,
     aud: "api",
     client: "mobile",
-    custom: {
-        likesToParty: true
-    }
+    likesToParty: true
 });
 ```
 
@@ -100,7 +98,7 @@ Generates a custom authentication middleware function based on the option object
 
 - aud: the audience, only JWTs targeting this audience are allowed
 - type: token type, optional parameter, normal tokens are "token", input "refresh" for refresh token routes
-- predicate: a function expected to return a boolean value, it's passed the custom attribute given to the signToken function
+- predicate: a function expected to return a boolean value, it's passed the decoded token value
 
 The middleware will reject requests for the following:
 
@@ -114,6 +112,6 @@ The middleware will reject requests for the following:
 qufl.getValidator({
     aud: "api",
     type: "token" || "refresh"
-    predicate: (custom) => custom.likesToParty
+    predicate: (token) => token.likesToParty
 })
 ```

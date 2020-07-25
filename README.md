@@ -98,7 +98,7 @@ Generates a custom authentication middleware function based on the option object
 
 - aud: the audience, only JWTs targeting this audience are allowed
 - type: token type, optional parameter, normal tokens are "token", input "refresh" for refresh token routes
-- predicate: a function expected to return a boolean value, it's passed the decoded token value
+- predicate: a function expected to return a boolean value or a promise that resolves to one, it's passed the decoded token value
 
 The middleware will reject requests for the following:
 

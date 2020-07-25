@@ -47,28 +47,37 @@ test("Qufl does not refresh removed tokens", () => {
     }).toThrow("Refresh token removed")
 })
 
-test("Qufl validator function passes valid tokens", () => {
+test("Qufl validator function passes valid tokens", async () => {
     let { token } = qufl.signToken(credentials);
     const req = { headers: { authorization: "Bearer " +token} }
     const res = { code: 0, status(code) { this.code = code; return this}, send(data) { throw data }}
     const next = () => { throw "passed on successfully" }
+    
     let validator = qufl.getValidator({
         aud: credentials.aud,
     })
-    expect(() => {
-        validator(req, res, next)
-    }).toThrow("passed on successfully")
-    expect(req.qufl).toMatchObject(JSON.parse(token))
+    
+    try {
+        await validator(req, res, next)
+        throw "did not invoke next"
+    } catch(e) {
+        expect(e).toBe("passed on successfully")
+        expect(req.qufl).toMatchObject(JSON.parse(token))
+    }
     validator = qufl.getValidator({
         aud: credentials.aud,
         predicate: (token) => token.likesToParty
     })
-    expect(() => {
-        validator(req, res, next)
-    }).toThrow("passed on successfully")
+    
+    try {
+        await validator(req, res, next)
+        throw "did not invoke next"
+    } catch(e) {
+        expect(e).toBe("passed on successfully")
+    }
 })
 
-test("Qufl validator function rejects invalid tokens", () => {
+test("Qufl validator function rejects invalid tokens", async () => {
     let { token } = qufl.signToken(credentials);
     let req = { headers: { authorization: "Bearer 4" +token} }
     let res = { code: 0, status(code) { this.code = code; return this}, send({error}) { throw JSON.stringify({code: this.code, error}) }}
@@ -77,33 +86,47 @@ test("Qufl validator function rejects invalid tokens", () => {
     let validator = qufl.getValidator({
         aud: credentials.aud,
     })
-    expect(() => {
-        validator(req, res, next)
-    }).toThrow(JSON.stringify({code: 401, error: "Token Invalid"}))
+    try {
+        await validator(req, res, next)
+        throw "did not invoke next"
+    } catch (e) {
+        expect(e).toBe(JSON.stringify({code: 401, error: "Token Invalid"}))
+    }
 
     req.headers.authorization = "";
 
     validator = qufl.getValidator({
         aud: credentials.aud,
     })
-    expect(() => {
-        validator(req, res, next)
-    }).toThrow(JSON.stringify({code: 401, error: "No token provided"}))
-
+    try {
+        await validator(req, res, next)
+        throw "did not invoke next"
+    } catch(e) {
+        expect(e).toBe(JSON.stringify({code: 401, error: "No token provided"}))
+    }
+    
     req.headers.authorization = "Bearer " + token;
 
     validator = qufl.getValidator({
         aud: "engineer",
     })
-    expect(() => {
-        validator(req, res, next)
-    }).toThrow(JSON.stringify({code: 403, error: "Invalid aud"}))
 
+    try {
+        await validator(req, res, next)
+        throw "did not invoke next"
+    } catch(e) {
+        expect(e).toBe(JSON.stringify({code: 403, error: "Invalid aud"}))
+    }
+    
     validator = qufl.getValidator({
         aud: credentials.aud,
         predicate: (token) => !token.likesToParty
     })
-    expect(() => {
-        validator(req, res, next)
-    }).toThrow(JSON.stringify({code: 403, error: "Custom Auth check failed"}))
+
+    try {
+        await validator(req, res, next)
+        throw "did not invoke next"
+    } catch(e) {
+        expect(e).toBe(JSON.stringify({code: 403, error: "Custom Auth check failed"}))
+    }
 })

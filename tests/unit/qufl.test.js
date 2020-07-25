@@ -1,6 +1,6 @@
 const Qufl = require('../../lib/qufl');
 
-const JWT = {
+const jwt = {
     sign(token) {
         return JSON.stringify(token);
     },
@@ -9,18 +9,18 @@ const JWT = {
     }
 };
 
-let qufl = new Qufl({ JWT, secret: "testing_secret" });
+let qufl = new Qufl({ jwt, secret: "testing_secret" });
 
 let credentials = {
-    agent: "bob",
-    role: "admin",
+    sub: "bob",
+    aud: "admin",
     custom: {
         likesToParty: true
     }
 };
 
 beforeEach(()=>{
-    qufl = new Qufl({ JWT, secret: "testing_secret" });
+    qufl = new Qufl({ jwt, secret: "testing_secret" });
 })
 
 test("Qufl is able to sign tokens", () => {
@@ -55,13 +55,14 @@ test("Qufl validator function passes valid tokens", () => {
     const res = { code: 0, status(code) { this.code = code; return this}, send(data) { throw data }}
     const next = () => { throw "passed on successfully" }
     let validator = qufl.getValidator({
-        role: credentials.role,
+        aud: credentials.aud,
     })
     expect(() => {
         validator(req, res, next)
     }).toThrow("passed on successfully")
     expect(req.qufl).toMatchObject(JSON.parse(token))
     validator = qufl.getValidator({
+        aud: credentials.aud,
         predicate: (token) => token.likesToParty
     })
     expect(() => {
@@ -76,7 +77,7 @@ test("Qufl validator function rejects invalid tokens", () => {
     let next = () => { throw "passed on successfully" }
     
     let validator = qufl.getValidator({
-        role: credentials.role,
+        aud: credentials.aud,
     })
     expect(() => {
         validator(req, res, next)
@@ -85,7 +86,7 @@ test("Qufl validator function rejects invalid tokens", () => {
     req.headers.authorization = "";
 
     validator = qufl.getValidator({
-        role: credentials.role,
+        aud: credentials.aud,
     })
     expect(() => {
         validator(req, res, next)
@@ -94,13 +95,14 @@ test("Qufl validator function rejects invalid tokens", () => {
     req.headers.authorization = "Bearer " + token;
 
     validator = qufl.getValidator({
-        role: "engineer",
+        aud: "engineer",
     })
     expect(() => {
         validator(req, res, next)
-    }).toThrow(JSON.stringify({code: 403, error: "Invalid role"}))
+    }).toThrow(JSON.stringify({code: 403, error: "Invalid aud"}))
 
     validator = qufl.getValidator({
+        aud: credentials.aud,
         predicate: (token) => !token.likesToParty
     })
     expect(() => {

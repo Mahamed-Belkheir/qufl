@@ -49,15 +49,15 @@ const qufl = new Qufl({
 The signToken method returns both a token and a refresh token, the latter is added to the token store (currently only in memory).
 You pass an options object that contains:
 
-- agent: the user being authorized
-- role: user role
+- sub: the jwt subject (e.g user id)
+- aud: the jwt audience (where the jwt is to be used)
 - client: optional parameter, allows different session on different clients (e.g: mobile login and logout does not affect web session)
 - custom: any custom properties you wish to include to verify by later on
 
 ```js
 qufl.signToken({
-    agent: userId,
-    role: "user",
+    sub: userId,
+    aud: "api",
     client: "mobile",
     custom: {
         likesToParty: true
@@ -98,7 +98,7 @@ Generates a custom authentication middleware function based on the option object
 
 >**Note:** content likely to change in future versions
 
-- role: the user role allowed to access the route
+- aud: the audience, only JWTs targeting this audience are allowed
 - type: token type, optional parameter, normal tokens are "token", input "refresh" for refresh token routes
 - predicate: a function expected to return a boolean value, it's passed the custom attribute given to the signToken function
 
@@ -106,13 +106,13 @@ The middleware will reject requests for the following:
 
 - no token provided
 - invalid token
-- invalid role
+- invalid aud
 - invalid type
 - custom check failed
 
 ```js
 qufl.getValidator({
-    role: "user",
+    aud: "api",
     type: "token" || "refresh"
     predicate: (custom) => custom.likesToParty
 })

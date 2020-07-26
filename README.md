@@ -38,7 +38,7 @@ const Qufl = require('qufl');
 const jwt = require('jsonwebtoken');
 
 const qufl = new Qufl({
-    JWT: jwt,
+    jwt: jwt,
     secret: "test",
     timeout: '15m'
 });

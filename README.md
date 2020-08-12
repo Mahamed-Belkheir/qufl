@@ -32,6 +32,7 @@ You need to initialize a qufl instance by passing an option object to the constr
 - JWT: the jsonwebtoken object or another implementation that satisfies the sign and verify interfaces
 - secret: the JWT secret key
 - timeout: time before a JWT expires, either a number (seconds) or a string e.g ("1h", "20m")
+- useMiddleware: off by default, if toggled on, middleware validation will pass errors to the next error handler, if off, the middleware would respond to the request by itself.
 
 ```js
 const Qufl = require('qufl');
@@ -40,7 +41,8 @@ const jwt = require('jsonwebtoken');
 const qufl = new Qufl({
     jwt: jwt,
     secret: "test",
-    timeout: '15m'
+    timeout: '15m',
+    useMiddleware: true,
 });
 ```
 
@@ -55,12 +57,12 @@ You pass an options object that contains:
 - ...custom: any custom properties you wish to include to verify by later on
 
 ```js
-qufl.signToken({
-    sub: userId,
-    aud: "api",
-    client: "mobile",
-    likesToParty: true
-});
+await qufl.signToken({
+        sub: userId,
+        aud: "api",
+        client: "mobile",
+        likesToParty: true
+    });
 ```
 
 ### refreshToken
@@ -69,7 +71,7 @@ The refreshToken method takes a decoded refresh JWT and returns a new JWT,
 provided the decoded token is of type refresh and is still in the token store
 
 ```js
-qufl.refreshToken(decodedRefreshToken);
+await qufl.refreshToken(decodedRefreshToken);
 
 ```
 
@@ -79,7 +81,7 @@ The removeToken method is effecitvely a logout method, it takes a decoded JWT ob
 and removes the associated user and client entry
 
 ```js
-qufl.removeToken(decodedToken);
+await qufl.removeToken(decodedToken);
 ```
 
 ### changeSecret
@@ -87,14 +89,16 @@ qufl.removeToken(decodedToken);
 Changes the JWT secret and empties the token store
 
 ```js
-qufl.changeSecret(newSecret);
+await qufl.changeSecret(newSecret);
 ```
 
 ### getValidator
 
-Generates a custom authentication middleware function based on the option object passed in
+Generates a custom authentication middleware function based on the option object passed in, the decoded token is stored on the request with the `qufl` attribute. (accessible in routes as `req.qufl`)
 
 >**Note:** content likely to change in future versions
+
+all parameters are optional, if none are provided, the default values are used, allowing any valid token of the default type to access the route.
 
 - aud: the audience, only JWTs targeting this audience are allowed
 - type: token type, optional parameter, normal tokens are "token", input "refresh" for refresh token routes
@@ -107,6 +111,8 @@ The middleware will reject requests for the following:
 - invalid aud
 - invalid type
 - custom check failed
+
+If useMiddleware is toggled on, the validator will pass the error into next(e), including an error message and a statusCode
 
 ```js
 qufl.getValidator({

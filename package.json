@@ -10,8 +10,10 @@
   "license": "MIT",
   "files": [
     "index.js",
-    "lib/"
+    "lib/",
+    "types/"
   ],
+  "types":"./types/index.d.ts",
   "devDependencies": {
     "express": "^4.17.1",
     "jest": "^26.1.0",

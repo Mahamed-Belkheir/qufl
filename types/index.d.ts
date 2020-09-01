@@ -18,6 +18,7 @@ declare namespace Qufl {
     export interface QuflToken {
         sub: string
         aud: string
+        client: string
         type: string
         custom?: any
     }

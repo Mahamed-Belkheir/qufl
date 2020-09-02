@@ -10,7 +10,7 @@ const jwt = {
     }
 };
 
-let qufl = new Qufl({ jwt, secret: "testing_secret", useMiddleWere: true });
+let qufl = new Qufl({ jwt, secret: "testing_secret", useMiddleware: true });
 
 let credentials = {
     sub: "bob",
@@ -19,7 +19,7 @@ let credentials = {
 };
 
 beforeEach(()=>{
-    qufl = new Qufl({ jwt, secret: "testing_secret", useMiddleWere: true });
+    qufl = new Qufl({ jwt, secret: "testing_secret", useMiddleware: true });
 })
 
 test("Qufl is able to sign tokens", async () => {

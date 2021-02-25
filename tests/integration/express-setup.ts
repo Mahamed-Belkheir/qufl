@@ -1,5 +1,5 @@
 import express from "express";
-import Qufl from "../../src/qufl";
+import Qufl from "../../lib/qufl";
 import cookieParser from "cookie-parser";
 
 export default (qufl: Qufl) => {

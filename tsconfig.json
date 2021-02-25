@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
       "skipLibCheck": true,
-      "target": "ES2015",
+      "declaration": true,
+      "target": "ES2016",
       "module": "commonjs",
       "lib": [
         "dom",
@@ -10,7 +11,7 @@
         "esnext.asynciterable"
       ],
       "sourceMap": true,
-      "outDir": "./dist",
+      "outDir": "./lib",
       "moduleResolution": "node",
       "removeComments": true,
       "noImplicitAny": true,

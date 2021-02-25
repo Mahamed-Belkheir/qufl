@@ -1,4 +1,4 @@
-import Qufl from "../../src/qufl";
+import Qufl from "../../lib/qufl";
 import expressSetup from "./express-setup";
 import testSetup from "./test-setup";
 

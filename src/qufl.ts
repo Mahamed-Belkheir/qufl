@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express"
-import { NoTokenException, InvalidTokenException, InvalidAudienceException, InvalidTokenTypeException, QuflBaseException, RefreshTokenExpiredException } from "./exceptions";
+import * as exceptions from "./exceptions";
 import jwt from "jsonwebtoken";
 import { StoreFacade, StoreInterface } from "./store";
 import EventEmitter from "events";
+
 
 export default class Qufl {
     private options: QuflOptions
@@ -42,7 +43,7 @@ export default class Qufl {
     public async refreshToken(refreshToken: QuflToken) {
         let result = await this.store.get(refreshToken.aud + ":" + refreshToken.sub);
         if (!result) {
-            throw new RefreshTokenExpiredException();
+            throw new exceptions.RefreshTokenExpiredException();
         }
         let token: string = jwt.sign({
             sub: refreshToken.sub,
@@ -67,13 +68,13 @@ export default class Qufl {
             })
             return token as QuflToken;
         } catch {
-            throw new InvalidTokenException();
+            throw new exceptions.InvalidTokenException();
         }
     }
 
     private errorResponse(err: Error, res: Response) {
         let code = 500;
-        if (err instanceof QuflBaseException) {
+        if (err instanceof exceptions.QuflBaseException) {
             code = err.statusCode;
         }
         res.status(code).send({
@@ -84,7 +85,7 @@ export default class Qufl {
     public extractors: { [key: string]: TokenExtractor } = {
         bearer: (req: Request) => {
             let header = req.headers['authorization'];
-            if (!header) throw new NoTokenException();
+            if (!header) throw new exceptions.NoTokenException();
             return header.slice(7)
         },
         cookie: (req: Request) => {
@@ -113,10 +114,10 @@ export default class Qufl {
                 let tokenString = extractor(req);
                 let token = this.verifyToken(tokenString);
                 if (options.tokenType != token.type) {
-                    throw new InvalidTokenTypeException();
+                    throw new exceptions.InvalidTokenTypeException();
                 }
                 if (options.audience) {
-                    if (token.aud != options.audience) throw new InvalidAudienceException();
+                    if (token.aud != options.audience) throw new exceptions.InvalidAudienceException();
                 }
                 if (options.customValidator) {
                     let validated = options.customValidator(token, req, res);
@@ -174,3 +175,5 @@ declare global {
         }
     }
 }
+
+export const Exceptions = exceptions;

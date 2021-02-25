@@ -100,10 +100,9 @@ export default class Qufl {
         [Refresh]: this.extractors.cookie
     }
 
-    public auth = (options: AuthOptions = {
-        tokenType: "token"
-    }) => {
+    public auth = (options: AuthOptions = {}) => {
         let extractor: TokenExtractor;
+        options.tokenType ??= "token";
         if (options.customExtractor) {
             extractor = options.customExtractor;
         } else {

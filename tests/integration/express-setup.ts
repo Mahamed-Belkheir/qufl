@@ -29,12 +29,24 @@ export default (qufl: Qufl) => {
     })
 
     server.post('/refresh', qufl.auth({ tokenType: "refresh" }), async (req, res) => {
-        let token = await qufl.refreshToken(req.qufl);
+        try {
+            var token = await qufl.refreshToken(req.qufl);
+        } catch (err) {
+            let code = err.statusCode || 500;
+            res.status(code).send({message: err.message})
+            return;
+        }
         res.send({token});
     })
 
     server.post('/admin/refresh', qufl.auth({ tokenType: "refresh", audience: "admin" }), async (req, res) => {
-        let token = await qufl.refreshToken(req.qufl);
+        try {
+            var token = await qufl.refreshToken(req.qufl);
+        } catch (err) {
+            let code = err.statusCode || 500;
+            res.status(code).send({message: err.message})
+            return;
+        }
         res.send({token});
     })
 

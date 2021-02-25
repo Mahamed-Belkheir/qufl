@@ -16,14 +16,14 @@ export class InvalidTokenException extends QuflBaseException {
 
 export class InvalidAudienceException extends QuflBaseException {
     constructor() {
-        super("token audience is incorrect");
+        super("invalid token audience");
         this.statusCode = 403;
     }
 }
 
 export class InvalidTokenTypeException extends QuflBaseException {
     constructor() {
-        super("token type is incorrect");
+        super("invalid token type");
     }
 }
 

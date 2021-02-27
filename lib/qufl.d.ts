@@ -6,13 +6,14 @@ import EventEmitter from "events";
 export default class Qufl {
     private options;
     private store;
-    constructor({ algorithm, cookieKey, passError, secret, tokenTimeout, store }?: {
+    constructor({ algorithm, cookieKey, passError, secret, tokenTimeout, store, storeOptions, }?: {
         algorithm?: string | undefined;
         cookieKey?: string | undefined;
         passError?: boolean | undefined;
         secret?: string | undefined;
         tokenTimeout?: string | undefined;
         store?: undefined;
+        storeOptions?: {} | undefined;
     });
     cookieKey(): string;
     signToken(data: Omit<QuflToken, "type">): Promise<{
@@ -30,6 +31,7 @@ export default class Qufl {
         [key: string]: TokenExtractor;
     };
     auth: (options?: AuthOptions) => (req: Request, res: Response, next: NextFunction) => void;
+    changeSecret(secret: string): void;
 }
 export declare type QuflToken = {
     sub: string;
@@ -41,10 +43,10 @@ export declare type QuflToken = {
 };
 declare type TokenType = "token" | "refresh";
 export declare type AuthOptions = {
-    audience?: string;
-    tokenType?: TokenType;
-    customValidator?: (token: QuflToken, req: Request, res: Response) => Promise<boolean | void>;
-    customExtractor?: TokenExtractor;
+    aud?: string;
+    type?: TokenType;
+    validator?: (token: QuflToken, req: Request, res: Response) => Promise<boolean | void>;
+    extractor?: TokenExtractor;
 };
 export declare type QuflOptions = {
     tokenTimeout: number | string;
@@ -53,6 +55,7 @@ export declare type QuflOptions = {
     algorithm: string;
     passError: boolean;
     store?: (events: typeof EventEmitter) => StoreInterface;
+    storeOptions?: any;
 };
 export declare type TokenExtractor = (req: Request) => string;
 declare global {

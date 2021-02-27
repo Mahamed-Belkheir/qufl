@@ -28,7 +28,7 @@ export default (qufl: Qufl) => {
         res.send({token});
     })
 
-    server.post('/refresh', qufl.auth({ tokenType: "refresh" }), async (req, res) => {
+    server.post('/refresh', qufl.auth({ type: "refresh" }), async (req, res) => {
         try {
             var token = await qufl.refreshToken(req.qufl);
         } catch (err) {
@@ -39,7 +39,7 @@ export default (qufl: Qufl) => {
         res.send({token});
     })
 
-    server.post('/admin/refresh', qufl.auth({ tokenType: "refresh", audience: "admin" }), async (req, res) => {
+    server.post('/admin/refresh', qufl.auth({ type: "refresh", aud: "admin" }), async (req, res) => {
         try {
             var token = await qufl.refreshToken(req.qufl);
         } catch (err) {
@@ -52,22 +52,22 @@ export default (qufl: Qufl) => {
 
     server.post('/logout', qufl.auth(), async (req, res) => {
         await qufl.removeToken(req.qufl);
-        res.send(200);
+        res.sendStatus(200);
     })
 
-    server.post('/admin/logout', qufl.auth({ audience: "admin" }), async (req, res) => {
+    server.post('/admin/logout', qufl.auth({ aud: "admin" }), async (req, res) => {
         await qufl.removeToken(req.qufl);
-        res.send(200);
+        res.sendStatus(200);
     })
 
     //@ts-ignore
     server.get('/content', qufl.auth(), async (req, res) => {
-        res.send(200);
+        res.sendStatus(200);
     })
 
     //@ts-ignore
-    server.get('/admin/content', qufl.auth({ audience: "admin" }), async (req, res) => {
-        res.send(200);
+    server.get('/admin/content', qufl.auth({ aud: "admin" }), async (req, res) => {
+        res.sendStatus(200);
     })
 
 

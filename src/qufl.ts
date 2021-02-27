@@ -14,14 +14,15 @@ export default class Qufl {
         passError = false,
         secret = "",
         tokenTimeout = "1h",
-        store = undefined
+        store = undefined,
+        storeOptions = {},
     }  = { }
     ) {
-        let options = { algorithm, cookieKey, passError, secret, tokenTimeout, store };
+        let options = { algorithm, cookieKey, passError, secret, tokenTimeout, store, storeOptions };
         if (!options.secret) {
             throw Error("no secret set");
         }
-        this.store = new StoreFacade(options.store);
+        this.store = new StoreFacade(options.store, options.storeOptions);
         this.options = options;
     }
     public cookieKey() {
@@ -41,6 +42,9 @@ export default class Qufl {
     }
 
     public async refreshToken(refreshToken: QuflToken) {
+        if (refreshToken.type != "refresh") {
+            throw new exceptions.InvalidTokenTypeException();
+        }
         let result = await this.store.get(refreshToken.aud + ":" + refreshToken.sub);
         if (!result) {
             throw new exceptions.RefreshTokenExpiredException();
@@ -103,24 +107,24 @@ export default class Qufl {
 
     public auth = (options: AuthOptions = {}) => {
         let extractor: TokenExtractor;
-        options.tokenType ??= "token";
-        if (options.customExtractor) {
-            extractor = options.customExtractor;
+        options.type ??= "token";
+        if (options.extractor) {
+            extractor = options.extractor;
         } else {
-            extractor = this.extractorMapping[options.tokenType!];
+            extractor = this.extractorMapping[options.type!];
         }
         return (req: Request, res: Response, next: NextFunction) => {
             try {
                 let tokenString = extractor(req);
                 let token = this.verifyToken(tokenString);
-                if (options.tokenType != token.type) {
+                if (options.type != token.type) {
                     throw new exceptions.InvalidTokenTypeException();
                 }
-                if (options.audience) {
-                    if (token.aud != options.audience) throw new exceptions.InvalidAudienceException();
+                if (options.aud) {
+                    if (token.aud != options.aud) throw new exceptions.InvalidAudienceException();
                 }
-                if (options.customValidator) {
-                    let validated = options.customValidator(token, req, res);
+                if (options.validator) {
+                    let validated = options.validator(token, req, res);
                     if (!validated) return;
                 }
                 req.qufl = token;
@@ -134,6 +138,10 @@ export default class Qufl {
                 }
             }
         }
+    }
+
+    public changeSecret(secret: string) {
+        this.options.secret = secret;
     }
 }
 
@@ -151,10 +159,10 @@ const Token: TokenType = "token";
 const Refresh: TokenType = "refresh";
 
 export type AuthOptions = {
-    audience?: string,
-    tokenType?: TokenType,
-    customValidator?: (token: QuflToken, req: Request, res: Response) => Promise<boolean | void>
-    customExtractor?: TokenExtractor
+    aud?: string,
+    type?: TokenType,
+    validator?: (token: QuflToken, req: Request, res: Response) => Promise<boolean | void>
+    extractor?: TokenExtractor
 }
 
 export type QuflOptions = {
@@ -164,6 +172,7 @@ export type QuflOptions = {
     algorithm: string
     passError: boolean
     store?: (events: typeof EventEmitter) => StoreInterface
+    storeOptions?: any
 }
 
 export type TokenExtractor = (req: Request) => string;

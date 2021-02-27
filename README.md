@@ -25,7 +25,7 @@ let qufl = new Qufl({ secret: "MY_JWT_SECRET_HERE" });
 
 let server = express();
 
-//
+// cookie parser is required for cookie stored tokens (if used)
 server.use(cookieParser());
 server.use(express.json());
 
@@ -232,7 +232,7 @@ class Qufl {
 }
 ```
 
-The default implementation caters to the idea that refresh tokens are stores in httpOnly cookies, while normal tokens are stored in memory, but that can be easily overriden with the following:
+The default implementation caters to the idea that refresh tokens are stored in httpOnly cookies, while normal tokens are stored in memory, but that can be easily overriden with the following:
 
 ```ts
 // to use bearer tokens for refresh tokens as well

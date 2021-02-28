@@ -45,7 +45,7 @@ server.post('/login', async (req, res) => {
     });
 })
 
-server.get('/refersh', qufl.auth({ type: "refresh" }), async (req, res) => {
+server.get('/refresh', qufl.auth({ type: "refresh" }), async (req, res) => {
     let token = await qufl.refreshToken(req.qufl);
     res.send({
         status: 'success',

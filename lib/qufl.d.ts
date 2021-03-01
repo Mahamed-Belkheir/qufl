@@ -16,7 +16,7 @@ export default class Qufl {
         storeOptions?: {} | undefined;
     });
     cookieKey(): string;
-    signToken(data: Omit<QuflToken, "type">): Promise<{
+    signToken(data: Omit<QuflToken, "type" | "sessionId">): Promise<{
         token: string;
         refresh: string;
     }>;
@@ -37,6 +37,7 @@ export declare type QuflToken = {
     sub: string;
     aud?: string;
     type: TokenType;
+    sessionId: string;
     payload?: {
         [key: string]: any;
     };

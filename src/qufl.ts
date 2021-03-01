@@ -29,15 +29,16 @@ export default class Qufl {
         return this.options.cookieKey;
     }
 
-    public async signToken(data: Omit<QuflToken, "type">) {
-        let token: string = jwt.sign({ ...data, type: Token }, this.options.secret, {
+    public async signToken(data: Omit<QuflToken, "type" | "sessionId">) {
+        let sessionId = String(Date.now());
+        let token: string = jwt.sign({ ...data, type: Token, sessionId }, this.options.secret, {
             expiresIn: this.options.tokenTimeout,
             algorithm: this.options.algorithm as any
         });
-        let refresh: string = jwt.sign({ ...data, type: Refresh }, this.options.secret, {
+        let refresh: string = jwt.sign({ ...data, type: Refresh, sessionId}, this.options.secret, {
             algorithm: this.options.algorithm as any
         });
-        await this.store.set(data.aud + ":" + data.sub, true)
+        await this.store.set(sessionId +":"+data.sub+":"+data.aud, true)
         return { token, refresh }
     }
 
@@ -45,7 +46,7 @@ export default class Qufl {
         if (refreshToken.type != "refresh") {
             throw new exceptions.InvalidTokenTypeException();
         }
-        let result = await this.store.get(refreshToken.aud + ":" + refreshToken.sub);
+        let result = await this.store.get(refreshToken.sessionId +":"+refreshToken.sub+":"+refreshToken.aud);
         if (!result) {
             throw new exceptions.RefreshTokenExpiredException();
         }
@@ -53,6 +54,7 @@ export default class Qufl {
             sub: refreshToken.sub,
             aud: refreshToken.aud,
             type: Token,
+            sessionId: refreshToken.sessionId,
             payload: refreshToken.payload
         } as QuflToken, this.options.secret, {
             expiresIn: this.options.tokenTimeout,
@@ -62,7 +64,7 @@ export default class Qufl {
     }
 
     public async removeToken(token: QuflToken) {
-        await this.store.destroy(token.aud + ":" + token.sub);
+        await this.store.destroy(token.sessionId +":"+token.sub+":"+token.aud);
     }
 
     private verifyToken(tokenString: string): QuflToken {
@@ -149,6 +151,7 @@ export type QuflToken = {
     sub: string
     aud?: string
     type: TokenType
+    sessionId: string
     payload?: {
         [key: string]: any
     }

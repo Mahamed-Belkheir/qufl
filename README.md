@@ -17,7 +17,7 @@ Qufl focuses on being simple to use, unopinionated and flexible, it does not ass
 ```ts
 import Qufl from "qufl";
 import express from "express";
-import cookieParser from "cookier-parser";
+import cookieParser from "cookie-parser";
 import UserController from "./controllers/user"
 
 let qufl = new Qufl({ secret: "MY_JWT_SECRET_HERE" });
@@ -89,7 +89,8 @@ You can configure multiple options at initalization, those options include:
 - cookieKey: the cookie key used to look for JWTs in the cookies header
 - passError: a boolean, whether to pass authentication errors to an express error handler or to respond to the client directly.
 - tokenTimeout: time before JWTs expire and require refreshing, default is 1h, values are passed to `jsonwebtoken`'s expiresIn as is, refer to `vercel/ms` for format
-- store: accepts any `express-session` compatible storage class, leave empty to use `memeorystore` by default, which is a production ready in-memory implementation
+- store: accepts any `express-session` compatible storage class, leave empty to use `memorystore` by default, which is a production ready in-memory implementation
+- storeOption: whatever options the storage class takes as parameters
 
 ```ts
 import Qufl from "qufl";

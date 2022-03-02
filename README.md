@@ -169,6 +169,7 @@ all parameters are optional, if none are provided, the default values are used, 
 - type: token type, optional parameter, defaults to normal "token"s, use "refresh" for refresh token routes
 - validator: allows you to implement custom authentication rules in the middleware itself, it's passed the decoded token, and the express request and response objects, you're able to send a response directly in the validator and end the request, or throw an error and let the error handler handle it.
 - extractor: allows you to specificy a custom token extractor for this one route, it accepts an express request object and expects a JWT string returned
+- allowGuest: allows unauthenticated users to pass through the middleware, while still processing authenticated users and adding them to req.qufl
 
 The middleware will reject requests for the following:
 

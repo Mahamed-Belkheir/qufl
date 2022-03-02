@@ -48,6 +48,7 @@ export declare type AuthOptions = {
     type?: TokenType;
     validator?: (token: QuflToken, req: Request, res: Response) => Promise<boolean | void>;
     extractor?: TokenExtractor;
+    allowGuest?: boolean;
 };
 export declare type QuflOptions = {
     tokenTimeout: number | string;

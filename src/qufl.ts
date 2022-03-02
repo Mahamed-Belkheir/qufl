@@ -132,7 +132,10 @@ export default class Qufl {
                 req.qufl = token;
                 next();
             } catch (err) {
-                if (this.options.passError) {
+                if (options.allowGuest && err instanceof exceptions.QuflBaseException) {
+                    next();
+                } 
+                else if (this.options.passError) {
                     next(err)
                 }
                 else {
@@ -165,7 +168,8 @@ export type AuthOptions = {
     aud?: string,
     type?: TokenType,
     validator?: (token: QuflToken, req: Request, res: Response) => Promise<boolean | void>
-    extractor?: TokenExtractor
+    extractor?: TokenExtractor,
+    allowGuest?: boolean
 }
 
 export type QuflOptions = {

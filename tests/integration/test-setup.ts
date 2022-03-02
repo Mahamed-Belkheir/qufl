@@ -103,4 +103,17 @@ export default (server: Express) => () => {
         expect(response.status).toBe(401);
         expect(response.body.message).toBe("refresh token expired");
     })
+
+    test("user can access mixed access route and register qufl data", async () => {
+        let response = await req.get('/mixed')
+        .set("authorization", "Bearer " + token);
+        expect(response.status).toBe(200);
+        expect(response.body.id).toBe(credentials.id);
+    })
+
+    test("unauthenticated users can access the route but have no qufl data", async () => {
+        let response = await req.get('/mixed')
+        expect(response.status).toBe(200);
+        expect(response.body.id).toBe(undefined);
+    })
 }

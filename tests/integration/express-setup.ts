@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 export default (qufl: Qufl) => {
     let server = express();
+    //@ts-ignore
     server.use(express.json());
     //@ts-ignore
     server.use(cookieParser());
@@ -68,6 +69,10 @@ export default (qufl: Qufl) => {
     //@ts-ignore
     server.get('/admin/content', qufl.auth({ aud: "admin" }), async (req, res) => {
         res.sendStatus(200);
+    })
+
+    server.get('/mixed', qufl.auth({allowGuest: true}), async (req, res) => {
+        res.status(200).send({id: req.qufl?.sub});
     })
 
 

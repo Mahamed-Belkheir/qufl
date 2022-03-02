@@ -1,6 +1,6 @@
 {
   "name": "qufl",
-  "version": "0.5.2",
+  "version": "0.6.2",
   "description": "qufl is a simple JWT authentication library that supports refresh tokens and distributed systems",
   "main": "lib/qufl.js",
   "scripts": {

@@ -1,7 +1,11 @@
 import {EventEmitter} from "events";
-import { SessionStoreUnavailableException } from "./exceptions";
 import memorystore from "memorystore";
 
+
+export class SessionStoreUnavailableException extends Error {
+    code: 500
+    message: "session store unavailable"
+}
 export interface StoreInterface extends EventEmitter {
     new(options: any): StoreInterface
     get(id: string, cb?: (err: Error | null, value: any) => void): void

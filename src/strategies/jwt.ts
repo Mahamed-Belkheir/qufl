@@ -33,12 +33,7 @@ export class JWTStrategy<Identity> {
 
     issueToken = async (data: Identity) => {
         let refresh = randomHash();
-        let token = jwt.sign({
-            data, 
-        }, this.options.secret, { 
-            algorithm: this.options.algoritm as any,
-            expiresIn: this.options.expireIn,
-        })
+        let token = await this.issueTokenWithoutRefresh(data);
         await this.store.set(refresh, JSON.stringify(data));
         return [ token, refresh ];
     }
@@ -63,7 +58,17 @@ export class JWTStrategy<Identity> {
         }, this.options.secret, { 
             algorithm: this.options.algoritm as any,
             expiresIn: this.options.expireIn,
-         })
+        })
+    }
+
+    issueTokenWithoutRefresh = async (data: Identity) => {
+        let token = jwt.sign({
+            data, 
+        }, this.options.secret, { 
+            algorithm: this.options.algoritm as any,
+            expiresIn: this.options.expireIn,
+        })
+        return token;
     }
     
     authenticateRefresh = async (token: string) => {

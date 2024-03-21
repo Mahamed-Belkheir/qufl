@@ -19,6 +19,7 @@ export declare class JWTStrategy<Identity> {
     issueToken: (data: Identity) => Promise<string[]>;
     authenticateToken: (token: string) => Promise<Identity>;
     refreshToken: (token: string) => Promise<string>;
+    issueTokenWithoutRefresh: (data: Identity) => Promise<string>;
     authenticateRefresh: (token: string) => Promise<[Identity, string]>;
     invalidateRefresh: (token: string) => Promise<void>;
 }

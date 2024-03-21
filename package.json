@@ -1,11 +1,12 @@
 {
   "name": "qufl",
-  "version": "0.7.0-beta.3",
+  "version": "0.7.0-beta.4",
   "description": "qufl is a simple JWT authentication library that supports refresh tokens and distributed systems",
   "main": "lib/qufl.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "npm test && npm build"
   },
   "author": "Mahamed Belkheir",
   "license": "MIT",

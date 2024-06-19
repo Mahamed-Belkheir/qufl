@@ -1,23 +1,27 @@
-import {EventEmitter} from "events";
+import { EventEmitter } from "events";
 import memorystore from "memorystore";
+import { ConstructorFirstArg } from "./@types/constructor";
 
 
 export class SessionStoreUnavailableException extends Error {
     code: 500
     message: "session store unavailable"
 }
+
+export type StoreConstructor = new (options: any) => StoreInterface
 export interface StoreInterface extends EventEmitter {
-    new(options: any): StoreInterface
     get(id: string, cb?: (err: Error | null, value: any) => void): void
     set(id: string, value: any, cb?: (err: Error | null) => void): void
     destroy(id: string, cb?: (err: Error | null) => void): void
 }
 
-export class StoreFacade {
+export class StoreFacade<T extends StoreConstructor = StoreConstructor> {
     private store: StoreInterface
     private storeReady: boolean = true;
 
-    constructor(store?: (events: {Store: typeof EventEmitter}) => StoreInterface, storeOptions: any = {}) {
+    constructor()
+    constructor(store: (events: {Store: typeof EventEmitter}) => T, storeOptions: ConstructorFirstArg<T>) 
+    constructor(store?: (events: {Store: typeof EventEmitter}) => T, storeOptions?: ConstructorFirstArg<T>) {
         if (!store) {
             store = memorystore as any;
         }

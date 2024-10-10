@@ -6,7 +6,10 @@ export declare class OpaqueTokenNotFound extends Error {
 export declare class OpaqueStrategy<Identity> {
     private store;
     private mapToId;
-    constructor(store: StoreFacade, mapToId?: (data: any) => Identity);
+    private options;
+    constructor(store?: StoreFacade, mapToId?: (data: any) => Identity, options?: {
+        touch: boolean;
+    });
     issueToken: (data: Identity) => Promise<string>;
     authenticateToken: (token: string) => Promise<Identity>;
     invalidateToken: (token: string) => Promise<void>;

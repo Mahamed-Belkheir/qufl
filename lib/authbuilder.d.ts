@@ -1,8 +1,8 @@
-declare type ExpressMiddleware = (req: any, res: any, next: any) => Promise<void>;
-declare type FastifyMiddleware = (req: any, res: any) => Promise<void>;
-declare type KoaMiddleware = (ctx: any, next: any) => Promise<void>;
-declare type NormalFunc = (data: any) => Promise<any>;
-export declare type PossibleResults = ExpressMiddleware | FastifyMiddleware | KoaMiddleware | NormalFunc;
+type ExpressMiddleware = (req: any, res: any, next: any) => Promise<void>;
+type FastifyMiddleware = (req: any, res: any) => Promise<void>;
+type KoaMiddleware = (ctx: any, next: any) => Promise<void>;
+type NormalFunc = (data: any) => Promise<any>;
+export type PossibleResults = ExpressMiddleware | FastifyMiddleware | KoaMiddleware | NormalFunc;
 export declare class AuthBuilder<T, BuildResult extends PossibleResults = NormalFunc> {
     private authenticator;
     private isRequired;

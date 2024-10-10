@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "prepublish": "npm test && npm build"
+    "prepublish": "npm test && npm run build"
   },
   "author": "Mahamed Belkheir",
   "license": "MIT",

@@ -11,10 +11,12 @@ export declare class JWTStrategy<Identity> {
     private store;
     private options;
     private mapToId;
-    constructor(store: StoreFacade, options?: {
+    constructor(store?: StoreFacade, options?: {
         secret: string;
         algoritm: string;
         expireIn: string;
+        publicKey?: string;
+        touch: boolean;
     }, mapToId?: (data: any) => Identity);
     issueToken: (data: Identity) => Promise<string[]>;
     authenticateToken: (token: string) => Promise<Identity>;

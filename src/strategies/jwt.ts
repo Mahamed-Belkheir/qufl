@@ -19,8 +19,9 @@ export class JWTStrategy<Identity> {
         private store: StoreFacade,
         private options: { 
             secret: string,
-            algoritm: string
-            expireIn: string
+            algoritm: string,
+            expireIn: string,
+            publicKey?: string,
         } = { 
             secret: randomHash(),
             algoritm: "HS256",
@@ -40,7 +41,8 @@ export class JWTStrategy<Identity> {
 
     authenticateToken = async (token: string) => {
         try {
-            let { data } = jwt.verify(token, this.options.secret, { 
+            const secret = this.options.publicKey || this.options.secret
+            let { data } = jwt.verify(token, secret, { 
                 algorithms: this.options.algoritm as any,
             }) as any
             return this.mapToId(data);

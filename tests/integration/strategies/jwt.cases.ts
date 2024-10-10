@@ -20,8 +20,8 @@ export default function JWTTestSetup(server: any) {
 
             expect(typeof res.text).toBe("string")
             expect(typeof res.header['set-cookie'][0]).toBe("string");
-            userToken = res.text
-            refresh = res.header['set-cookie']
+            userToken = res.text;
+            refresh = [res.header['set-cookie']]
         })
     
         describe("can access guarded content", () => {

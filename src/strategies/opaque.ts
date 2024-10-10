@@ -8,8 +8,13 @@ export class OpaqueTokenNotFound extends Error {
 
 export class OpaqueStrategy<Identity> {
     constructor(
-        private store: StoreFacade,
-        private mapToId: (data: any) => Identity = d => d
+        private store: StoreFacade = new StoreFacade(),
+        private mapToId: (data: any) => Identity = d => d,
+        private options: {
+            touch: boolean
+        } = {
+            touch: true,
+        }
     ) {
         
     }
@@ -23,6 +28,9 @@ export class OpaqueStrategy<Identity> {
     authenticateToken = async (token: string) => {
         let id = await this.store.get(token)
         if (!id) throw new OpaqueTokenNotFound
+        if (this.options.touch) {
+            await this.store.touch(token, id);
+        }
         return this.mapToId(JSON.parse(id));
     }
 

@@ -11,6 +11,7 @@ export interface StoreInterface extends EventEmitter {
     get(id: string, cb?: (err: Error | null, value: any) => void): void
     set(id: string, value: any, cb?: (err: Error | null) => void): void
     destroy(id: string, cb?: (err: Error | null) => void): void
+    touch?: (id: string, value: any, cb?: (err: Error | null) => void) => void
 }
 
 export class StoreFacade {
@@ -67,6 +68,21 @@ export class StoreFacade {
                     resolve();
                 }
             })
+        })
+    }
+
+    public touch(id: string, value: any): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (!this.storeReady) reject(new SessionStoreUnavailableException());
+            if (this.store.touch) {
+                this.store.touch(id, value, (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                })
+            }
         })
     }
 }

@@ -22,10 +22,12 @@ export class JWTStrategy<Identity> {
             algoritm: string,
             expireIn: string,
             publicKey?: string,
+            touch: boolean,
         } = { 
             secret: randomHash(),
             algoritm: "HS256",
-            expireIn: "10m"
+            expireIn: "10m",
+            touch: true
          },
         private mapToId: (data: any) => Identity = d => d
     ) {
@@ -54,6 +56,9 @@ export class JWTStrategy<Identity> {
     refreshToken = async (token: string) => {
         let data = await this.store.get(token)
         if (!data) throw new JWTRefreshTokenInvalid()
+        if (this.options.touch) {
+            await this.store.touch(token, data);
+        }
         data = JSON.parse(data);
         return jwt.sign({
             data, 
@@ -76,6 +81,9 @@ export class JWTStrategy<Identity> {
     authenticateRefresh = async (token: string) => {
         let data = await this.store.get(token);
         if (!data) throw new JWTRefreshTokenInvalid();
+        if (this.options.touch) {
+            await this.store.touch(token, data);
+        }
         data = JSON.parse(data);
         data = this.mapToId(data)
         return [data, token] as [Identity, string];

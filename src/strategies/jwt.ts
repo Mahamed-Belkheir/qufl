@@ -16,7 +16,7 @@ export class JWTRefreshTokenInvalid extends Error {
 
 export class JWTStrategy<Identity> {
     constructor(
-        private store: StoreFacade,
+        private store: StoreFacade = new StoreFacade(),
         private options: { 
             secret: string,
             algoritm: string,

@@ -23,11 +23,13 @@ export class JWTStrategy<Identity> {
             expireIn: string,
             publicKey?: string,
             touch: boolean,
+            serializer: (data: any) => string
         } = { 
             secret: randomHash(),
             algoritm: "HS256",
             expireIn: "10m",
-            touch: true
+            touch: true,
+            serializer: (data) => JSON.stringify(data) 
          },
         private mapToId: (data: any) => Identity = d => d
     ) {
@@ -37,7 +39,7 @@ export class JWTStrategy<Identity> {
     issueToken = async (data: Identity) => {
         let refresh = randomHash();
         let token = await this.issueTokenWithoutRefresh(data);
-        await this.store.set(refresh, JSON.stringify(data));
+        await this.store.set(refresh, this.options.serializer(data));
         return [ token, refresh ];
     }
 

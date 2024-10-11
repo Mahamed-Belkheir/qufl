@@ -17,6 +17,7 @@ export declare class JWTStrategy<Identity> {
         expireIn: string;
         publicKey?: string;
         touch: boolean;
+        serializer: (data: any) => string;
     }, mapToId?: (data: any) => Identity);
     issueToken: (data: Identity) => Promise<string[]>;
     authenticateToken: (token: string) => Promise<Identity>;
